@@ -7,11 +7,15 @@ import { columns } from "./columns";
 import { DataTable } from "@/components/data-table";
 import { useGetAccounts } from "@/features/accounts/api/use-get-accounts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useBulkDeleteAccounts } from "@/features/accounts/api/use-bulk-delete";
 
 const AccountsPage = () => {
   const newAccount = useNewAccount();
+  const deleteAccounts = useBulkDeleteAccounts();
   const accountsQuery = useGetAccounts();
   const accounts = accountsQuery.data || [];
+
+  const isDisabled = accountsQuery.isLoading || deleteAccounts.isPending;
 
   if (accountsQuery.isLoading) {
     return (
@@ -22,7 +26,7 @@ const AccountsPage = () => {
           </CardHeader>
           <CardContent>
             <div className="h-[500px] w-full flex items-center justify-center">
-                <Loader2  className="size-6 text-slate-300 animate-spin"/>
+              <Loader2 className="size-6 text-slate-300 animate-spin" />
             </div>
           </CardContent>
         </Card>
@@ -43,9 +47,12 @@ const AccountsPage = () => {
           <DataTable
             columns={columns}
             data={accounts}
-            filterKey="email"
-            onDelete={() => {}}
-            disabled={false}
+            filterKey="name"
+            onDelete={(row) => {
+              const ids = row.map((r) => r.original.id);
+              deleteAccounts.mutate({ ids });
+            }}
+            disabled={isDisabled}
           />
         </CardContent>
       </Card>

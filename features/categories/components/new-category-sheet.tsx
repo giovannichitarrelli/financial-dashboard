@@ -5,22 +5,22 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useNewAccount } from "@/features/accounts/hooks/use-new-account";
-import { AccountForm } from "./account-form";
-import { insertAccountSchema } from "@/db/schema";
+ import { CategoryForm } from "./category-form";
+import { insertCategorySchema } from "@/db/schema";
+import { useCreateCategory } from "@/features/categories/api/use-create-category";
+import { useNewCategory } from "../hooks/use-new-category";
 import { z } from "zod";
-import { useCreateAccount } from "@/features/accounts/api/use-create-account";
 
-const formSchema = insertAccountSchema.pick({
+const formSchema = insertCategorySchema.pick({
   name: true,
 });
 
 type FormValues = z.input<typeof formSchema>;
 
-const NewAccountSheet = () => {
-  const { isOpen, onClose } = useNewAccount();
+const NewCategorySheet = () => {
+  const { isOpen, onClose } = useNewCategory();
 
-  const mutation = useCreateAccount();
+  const mutation = useCreateCategory();
 
   const onSubmit = (values: FormValues) => {
     mutation.mutate(values, {
@@ -33,13 +33,13 @@ const NewAccountSheet = () => {
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>New account</SheetTitle>
+          <SheetTitle>New category</SheetTitle>
           <SheetDescription>
-            Create a new account to track yours accounts.
+            Create a new category to organize your transitions
           </SheetDescription>
         </SheetHeader>
 
-        <AccountForm
+        <CategoryForm
           onSubmit={onSubmit}
           disabled={mutation.isPending}
           defaultValues={{ name: "" }}
@@ -49,4 +49,4 @@ const NewAccountSheet = () => {
   );
 };
 
-export default NewAccountSheet;
+export default NewCategorySheet;

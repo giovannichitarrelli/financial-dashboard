@@ -1,4 +1,10 @@
-import { AreaChart, BarChart, FileSearch, LineChart, Loader2 } from "lucide-react";
+import {
+  AreaChart,
+  BarChart,
+  FileSearch,
+  LineChart,
+  Loader2,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { AreaVariant } from "./area-variant";
 import { BarVariant } from "./bar-variant";
@@ -77,7 +83,6 @@ export const Chart = ({ data = [] }: Props) => {
     </Card>
   );
 };
-
 
 export const ChartLoading = () => {
   return (

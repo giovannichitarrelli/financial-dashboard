@@ -45,7 +45,7 @@ const app = new Hono().get(
       startDate: Date,
       endDate: Date
     ) {
-      return await db
+      const result = await db
         .select({
           income:
             sql`SUM(CASE WHEN ${transactions.amount} >= 0 THEN ${transactions.amount} ELSE 0 END)`.mapWith(
@@ -67,6 +67,7 @@ const app = new Hono().get(
             lte(transactions.date, endDate)
           )
         );
+      return result;
     }
 
     const [currentPeriod] = await fetchFinancialData(
@@ -79,7 +80,6 @@ const app = new Hono().get(
       lastPeriodStart,
       lastPeriodEnd
     );
-
     const incomeChange = calculatePercentChange(
       currentPeriod.income,
       lastPeriod.income
@@ -127,7 +127,7 @@ const app = new Hono().get(
       });
     }
 
-    const activeDays = await db
+    const activeDays = await db //DEBUG HERE
       .select({
         date: transactions.date,
         income:
@@ -155,7 +155,6 @@ const app = new Hono().get(
 
     const days = fillMissingDays(activeDays, startDate, endDate);
 
-
     return c.json({
       data: {
         remainingAmount: currentPeriod.remaining,
@@ -166,9 +165,9 @@ const app = new Hono().get(
         expensesChange,
         categories: finalCategories,
         days,
-      }
-    })
-}
+      },
+    });
+  }
 );
 
 export default app;
